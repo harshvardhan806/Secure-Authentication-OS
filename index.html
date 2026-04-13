@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Authentication Framework for Operating Systems.</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- BOOT SCREEN -->
+    <div id="boot-screen" class="page active">
+        <div class="terminal" id="boot-terminal">
+            <!-- Simulated Boot Text injected via JS -->
+        </div>
+    </div>
+
+    <!-- AUTH GATEWAY -->
+    <div id="auth-page" class="page">
+        <div class="auth-wrapper">
+            <div class="glass-card auth-card" id="signin-container">
+                <h2 class="gradient-text">SECURE SIGN-IN</h2>
+                <p style="margin-bottom: 2rem; opacity: 0.7;">Provision a local user identity...</p>
+
+                <form id="signin-form">
+                    <div class="input-group">
+                        <input type="text" id="signin-username" placeholder="Choose Username" required autocomplete="username">
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="signin-password" placeholder="Create Key Phrase" required autocomplete="new-password">
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="signin-password-confirm" placeholder="Confirm Key Phrase" required autocomplete="new-password">
+                    </div>
+                    <div id="signin-msg" style="min-height: 1.2rem; margin: -0.5rem 0 1rem 0; font-family: var(--font-mono); font-size: 0.8rem; opacity: 0.9;"></div>
+                    <button type="submit">Create Identity</button>
+                </form>
+
+                <div style="margin-top: 1rem; text-align: center; font-size: 0.85rem; opacity: 0.85;">
+                    <button type="button" id="go-login" style="margin-top: 0.75rem; background: var(--glass); color: #e2e8f0; box-shadow: none; border: 1px solid var(--border);">Already enrolled? Go to Login</button>
+                </div>
+            </div>
+
+            <div class="glass-card auth-card" id="login-container">
+                <h2 class="gradient-text">SECURE LOGIN</h2>
+                <p style="margin-bottom: 2rem; opacity: 0.7;">Initialize kernel session...</p>
+                
+                <form id="login-form">
+                    <div class="input-group">
+                        <input type="text" id="username" placeholder="Username" required autocomplete="username">
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="password" placeholder="Key Phrase" required autocomplete="current-password">
+                    </div>
+                    <div id="login-msg" style="min-height: 1.2rem; margin: -0.5rem 0 1rem 0; font-family: var(--font-mono); font-size: 0.8rem; opacity: 0.9;"></div>
+                    <button type="submit">Establish Identity</button>
+                </form>
+                <div style="margin-top: 1rem; text-align: center; font-size: 0.85rem; opacity: 0.85;">
+                    <button type="button" id="go-signin" style="margin-top: 0.75rem; background: var(--glass); color: #e2e8f0; box-shadow: none; border: 1px solid var(--border);">No identity? Sign in first</button>
+                </div>
+            </div>
+
+            <!-- MFA Stage (Hidden) -->
+            <div class="glass-card auth-card" id="mfa-container" style="display: none;">
+                <h2 class="gradient-text">MULTI-FACTOR AUTH</h2>
+                <p>Secondary verification required.</p>
+                
+                <div class="mfa-display">
+                    <p style="font-size: 0.8rem; margin-bottom: 0.5rem;">AUTHENTICATOR SEED: <span id="totp-seed" style="color: var(--primary);">AEGIS-KRNL-99</span></p>
+                    <div class="totp-code" id="active-totp">123 456</div>
+                    <div style="width: 100%; height: 4px; background: var(--glass); margin-top: 10px;">
+                        <div id="totp-timer" style="height: 100%; width: 100%; background: var(--secondary);"></div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <input type="text" id="mfa-input" placeholder="000 000" maxlength="7">
+                </div>
+                <button id="verify-mfa">Authorize Session</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD -->
+    <div id="dashboard-page" class="page">
+        <div class="dashboard-container">
+            
+            <!-- Sidebar Navigation -->
+            <div class="sidebar glass-card">
+                <div style="margin-bottom: 2rem;">
+                    <h2 class="gradient-text">SECURE AUTHENTICATION FRAMEWORK</h2>
+                    <p style="font-size: 0.7rem;">KERNEL v4.2.0-SAFE</p>
+                </div>
+                
+                <div class="nav-item active" data-target="sys-overview">
+                    <span>SYSTEM OVERVIEW</span>
+                </div>
+                <div class="nav-item" data-target="attack-lab">
+                    <span>ATTACK & DEFENSE LAB</span>
+                </div>
+                <div class="nav-item" data-target="policy-mgr">
+                    <span>POLICY MANAGER</span>
+                </div>
+                <div class="nav-item" data-target="logs">
+                    <span>SECURITY LOGS</span>
+                </div>
+                
+                <div style="margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border);">
+                    <p id="system-time" style="font-family: var(--font-mono); font-size: 0.8rem;"></p>
+                    <button style="margin-top: 1rem; padding: 0.5rem; background: var(--accent); color: white;" onclick="location.reload()">TERMINATE SESSION</button>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="main-view glass-card" id="content-area">
+                
+                <!-- System Overview -->
+                <div id="sys-overview" class="view-panel">
+                    <h2 class="gradient-text">KERNEL STATUS</h2>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                        <div class="glass-card" style="padding: 1rem;">
+                            <p style="font-size: 0.8rem;">MEMORY PROTECTION</p>
+                            <h3 style="color: var(--primary);">ACTIVE (ASLR+DEP)</h3>
+                        </div>
+                        <div class="glass-card" style="padding: 1rem;">
+                            <p style="font-size: 0.8rem;">PRIVILEGE LEVEL</p>
+                            <h3 style="color: var(--secondary);">USER_SPACE (RING 3)</h3>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 2rem;">
+                        <h3>Active Security Modules</h3>
+                        <div id="module-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                            <!-- Modules injected via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Attack Lab (Heavy Feature) -->
+                <div id="attack-lab" class="view-panel" style="display: none;">
+                    <h2 class="gradient-text">ATTACK & DEFENSE SIMULATOR</h2>
+                    <p style="margin-bottom: 2rem;">Test kernel resilience against modern exploits.</p>
+
+                    <div class="glass-card" style="margin-bottom: 2rem;">
+                        <h3>Scenario 01: Buffer Overflow</h3>
+                        <p style="font-size: 0.8rem; opacity: 0.7; margin: 0.5rem 0;">Try to overwrite the instruction pointer by entering a long string.</p>
+                        
+                        <div class="input-group">
+                            <input type="text" id="overflow-input" placeholder="Payload...">
+                        </div>
+                        
+                        <div class="stack-visual" id="memory-map">
+                            <!-- Memory slots injected via JS -->
+                        </div>
+                        
+                        <div id="overflow-result" style="margin-top: 1rem; font-family: var(--font-mono); font-size: 0.8rem;"></div>
+                    </div>
+
+                    <div class="glass-card">
+                        <h3>Scenario 02: Privilege Escalation</h3>
+                        <p style="font-size: 0.8rem; opacity: 0.7; margin: 0.5rem 0;">Attempt to modify process UID in Ring 0.</p>
+                        <button id="escalate-btn" style="background: var(--secondary);">REQUEST ROOT ACCESS</button>
+                        <div id="priv-result" style="margin-top: 1rem; font-family: var(--font-mono); font-size: 0.8rem;"></div>
+                    </div>
+                </div>
+
+                <!-- Policy Manager -->
+                <div id="policy-mgr" class="view-panel" style="display: none;">
+                    <h2 class="gradient-text">SECURITY POLICY MANAGER</h2>
+                    <div class="glass-card" style="margin-top: 1rem;">
+                        <h3>Password Requirements</h3>
+                        <ul id="policy-list" style="list-style: none; margin-top: 1rem;">
+                            <li data-policy="min8">Minimum 8 characters</li>
+                            <li data-policy="special">Special characters Required</li>
+                            <li data-policy="numeric">Numeric digits Required</li>
+                            <li data-policy="case">Mixed case Required</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Logs -->
+                <div id="logs" class="view-panel" style="display: none;">
+                    <h2 class="gradient-text">KERNEL AUDIT LOGS</h2>
+                    <div id="audit-log" style="height: 400px; overflow-y: auto; background: rgba(0,0,0,0.5); padding: 1rem; border-radius: 8px; font-family: var(--font-mono); font-size: 0.8rem; border: 1px solid var(--border); margin-top: 1rem;">
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- RIGHT HUD PANEL -->
+            <div class="hud-panel glass-card">
+                <h3>THREAT ANALYTICS</h3>
+                <div style="height: 150px; background: var(--glass); border-radius: 8px; position: relative;" id="threat-chart">
+                    <!-- Threat visualization injected via JS -->
+                     <div class="scanning" style="height: 100%;"></div>
+                </div>
+                
+                <div style="margin-top: 2rem;">
+                    <h3>SYSTEM METRICS</h3>
+                    <div style="margin-top: 1rem;">
+                        <p style="font-size: 0.7rem;">CPU LOAD [SAFE]</p>
+                        <div style="width: 100%; height: 4px; background: var(--glass);"><div id="cpu-bar" style="width: 12%; height: 100%; background: var(--primary);"></div></div>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <p style="font-size: 0.7rem;">MEM ENTROPY [HIGH]</p>
+                        <div style="width: 100%; height: 4px; background: var(--glass);"><div id="mem-bar" style="width: 88%; height: 100%; background: var(--secondary);"></div></div>
+                    </div>
+                </div>
+
+                <div id="module-detail" style="margin-top: auto; padding: 1rem; background: var(--primary-dim); border: 1px solid var(--primary); border-radius: 8px;">
+                    <p style="font-weight: bold; color: var(--primary);">Aegis AI Monitor</p>
+                    <p style="font-size: 0.75rem; margin-top: 0.5rem;" id="ai-status">Scanning for buffer overflow vectors... System Nominal.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
